@@ -3,6 +3,7 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 # Source the dev environment variables, to know what the HOST should be in dev.
 source $SCRIPTPATH/../.env.dev
+echo "creating a certificate for $HOST"
 
 # Create a key and certificate pair, and place them in the app directory, using
 # a path relative to the location of this script

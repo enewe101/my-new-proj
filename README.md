@@ -1,48 +1,45 @@
-There are various things you need to do now to complete the cloning and setup
-of your new webapp.
+**To start developing:**
 
-1) Create a new repository for your project.  Add a remote that points to that
-	new repository:
+    1. Clone this repo.
+    2. Install docker community edition and docker-compose (On mac,
+	   docker-compose is bundled in with docker community edition)
+    3. Map requests issued to `https?://*.dev` to localhost.  On mac, you can
+	   do this by running `bin/mac-dev-localhost.sh`.
+	4. Have a look at dev-cheatsheet.txt for a guide on starting up and
+	   managing the development environment.
+	5. Start the development environment by doing 
+            $ ./start.sh
 
-		$ git remote add origin <uri for new repo>
-		$ git push -u origin master
+**To setup a staging environment on a new machine do:**
 
-2) The README you are currently reading pertains to making a new project from
-	the boiler plate.  But now, you want the README to tell other developers
-	how to clone your project and get their development environment up and
-	running.  You also want it to explain how to setup the staging and
-	production environments.  Replace the `README.md` that you are currently
-	reading with `README.new.md`.  Edit that file to include the github uri's
-	for your new repo.
+    1. Run this command on the target machine:
+        bash <(curl https://raw.githubusercontent.com/enewe101/my-new-proj/master/bin/ubuntu-setup.sh)
+	2. Ensure that DNS lookup of the hostname assigned to the STAGE\_HOST 
+        variable in `.env.dev` will point to the staging server.
+    2. Have a look at the dev-cheatsheet.txt for a guid on starting up and
+	   managing the development environment.
+	3. Start the staging environment by doing 
+            $ ./start.sh --stage
 
-4) Edit `bin/ubuntu-setup.sh`, in the places indicated -- Look for "TODO"
-	comments.  This script is used to set up the staging and production
-	environments (on ubuntu boxes).
 
-5) Edit `.env.dev` to reflect your project's name and your domain name.  There
-	are three versions of your domain name: 
-    1. your actual domain name, which should resolve to your production server;
-    2. your development domain name, which should be like your production
-	   domain name, but with the TLD changed to `dev` (e.g. example.com ->
-       example.dev); and
-    3. your staging domain name, which should be a subdomain of your production
-	   domain name, e.g. staging.example.com.
+**To start production do:**
 
-6) Make a self-signed certificate issued to your development domain name.  If
-	you've edited `.env.dev`, then all you need to do is run
-	bin/self-sign-cert.sh.  Commit the three files generated inside <proj>/cert
-	to your project's repo.  The develpment certificate isn't sensitive.  But
-	never commit a real certificate for the production server to the repo (the
-	certificate should be revoked immediately if you do).
+    1. Run this command on the target machine:
+			$ bash <(curl https://raw.githubusercontent.com/enewe101/my-new-proj/master/bin/ubuntu-setup.sh)
+    2. Make secrets for authentication between services of the app by running
+            $ bin/make-env.sh
+       You will need to provide a passphrase.  The secrets will be stored in 
+       `.env.prod.gpg`.
+    3. Obtain secrets from providers (Facebook, Twitter, Instagram, etc) and
+       encrypt the secrets and IDs into .keys.prod.gpg
+	4. Obtain an SSL certificate for the domain by running
+            $ bin/letsencrypt.sh
+       You may need to modify nginx's configuration and restart it to make the
+       well-known file servable.  Be sure to copy the certificate and private
+       key into the locations expected according to nginx's config.  Also, be
+       sure to create a diffie hellman group, if not already done by that 
+       script.
+	5. Start the production environment by doing 
+            $ ./start.sh --prod
 
-7) Fill in the needed info in .keys.dev.  You should get IDs and secrets for
-	communicating with Facebook, Twitter, and any other OAuth providers.  You
-	should obtain one set of credentials for your production server, and one set
-	for your development and stagin environments.  Both should be considered
-	sensitive, and not committed to the repo.  However, you will have to 
-	distribute the development credentials to your developers.  The production
-	credentials should only every be kept in encrypted form on
-	access-restricted systems.
 
-8) Next, follow the steps in README.new.md to setup a development, staging, or
-	production environment.
